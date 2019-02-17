@@ -25,7 +25,7 @@ summon_with_args="summon ${args[@]}"
 summon_cat_env="$summon_with_args cat @SUMMONENVFILE"
 summon_status_path="$(mktemp -t summon-status.XXXXXX)"
 
-echo "$summon_cat_env"
+echo "source <($summon_cat_env)"
 
 set -a +e
 source <($summon_cat_env; echo $? > "$summon_status_path")

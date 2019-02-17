@@ -21,7 +21,7 @@ teardown() {
   run "$HOOKS_PATH/post-checkout"
 
   assert [ -e summoned_no_args ]
-  assert_line --regexp '^summon .*' # command was echoed?
+  assert_line --regexp '^source <\(summon .*' # command was echoed?
   assert_success
   unstub summon
 }
@@ -38,7 +38,7 @@ teardown() {
   run "$HOOKS_PATH/post-checkout"
 
   assert [ -e summoned_all_args ]
-  assert_line --regexp '^summon .*'
+  assert_line --regexp '^source <\(summon .*'
   assert_success
   unstub summon
 }
