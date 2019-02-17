@@ -18,7 +18,7 @@ teardown() {
 @test "calls summon given no args" {
   stub summon "cat @SUMMONENVFILE : touch summoned_no_args"
 
-  run "$HOOKS_PATH/environment"
+  run "$HOOKS_PATH/post-checkout"
 
   assert [ -e summoned_no_args ]
   assert_line --regexp '^summon .*' # command was echoed?
@@ -35,7 +35,7 @@ teardown() {
 
   rm -f summoned_all_args
 
-  run "$HOOKS_PATH/environment"
+  run "$HOOKS_PATH/post-checkout"
 
   assert [ -e summoned_all_args ]
   assert_line --regexp '^summon .*'
@@ -46,7 +46,7 @@ teardown() {
 @test "exports variables from summon output" {
   stub summon "cat @SUMMONENVFILE : echo EXPORTED_FROM_SUMMON=some-value"
 
-  run bash -c "source $HOOKS_PATH/environment; echo \$EXPORTED_FROM_SUMMON"
+  run bash -c "source $HOOKS_PATH/post-checkout; echo \$EXPORTED_FROM_SUMMON"
 
   assert_line --partial "some-value"
   assert_success
@@ -58,7 +58,7 @@ teardown() {
       "cat @SUMMONENVFILE : false" \
       "echo : echo error message"
 
-  run "$HOOKS_PATH/environment"
+  run "$HOOKS_PATH/post-checkout"
 
   assert_line --partial "error message"
   assert_failure
