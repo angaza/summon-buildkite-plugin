@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+echo '--- :smiling_imp: Summoning secrets into environment'
+
+args=()
+
+if [[ -n "${BUILDKITE_PLUGIN_SUMMON_PROVIDER:-}" ]] ; then
+  args+=("-p" "$BUILDKITE_PLUGIN_SUMMON_PROVIDER")
+fi
+
+if [[ -n "${BUILDKITE_PLUGIN_SUMMON_SECRETS_FILE:-}" ]] ; then
+  args+=("-f" "$BUILDKITE_PLUGIN_SUMMON_SECRETS_FILE")
+fi
+
+if [[ -n "${BUILDKITE_PLUGIN_SUMMON_ENVIRONMENT:-}" ]] ; then
+  args+=("-e" "$BUILDKITE_PLUGIN_SUMMON_ENVIRONMENT")
+fi
+
+args+=("cat" "@SUMMONENVFILE")
+
+set -a
+source <(summon "${args[@]}")
+set +a

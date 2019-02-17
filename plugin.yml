@@ -1,0 +1,13 @@
+name: Summon
+description: Read secrets into environment variables using Summon
+author: https://github.com/angaza
+requirements:
+  - summon
+configuration:
+  properties:
+    provider:
+      type: string
+    secrets-file:
+      type: string
+    environment:
+      type: string
