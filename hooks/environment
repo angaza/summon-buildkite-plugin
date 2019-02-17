@@ -4,6 +4,7 @@ set -euo pipefail
 
 echo '--- :smiling_imp: Summoning secrets into environment'
 
+# accumulate arguments
 args=()
 
 if [[ -n "${BUILDKITE_PLUGIN_SUMMON_PROVIDER:-}" ]] ; then
@@ -20,6 +21,11 @@ fi
 
 args+=("cat" "@SUMMONENVFILE")
 
+# print, and then run, the full summon invocation
+full_command="summon ${args[@]}"
+
+echo $full_command
+
 set -a
-source <(summon "${args[@]}")
+source <($full_command)
 set +a
