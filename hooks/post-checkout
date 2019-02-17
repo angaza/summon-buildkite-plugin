@@ -31,11 +31,15 @@ set -a +e
 source <($summon_cat_env; echo $? > "$summon_status_path")
 set +a -e
 
+summon_status=$(cat "$summon_status_path")
+
+rm "$summon_status_path"
+
 # if summon did fail, re-run it outside of process substitution so that
 # error output is visible (summon itself should never have side effects,
 # and this approach is a lot simpler than trying to capture summon output
 # only in the failure case)
-if [ "$(cat $summon_status_path)" -ne 0 ]; then
+if [ "$summon_status" -ne 0 ]; then
   $summon_with_args echo
   false
 fi
