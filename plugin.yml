@@ -11,3 +11,7 @@ configuration:
       type: string
     environment:
       type: string
+    yaml:
+      type: string
+    substitutions:
+      type: array

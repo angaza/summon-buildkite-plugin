@@ -7,6 +7,20 @@ echo '--- :smiling_imp: Summoning secrets into environment'
 # accumulate arguments
 args=()
 
+function append_substitution_args() {
+  local prefix="BUILDKITE_PLUGIN_SUMMON_SUBSTITUTIONS"
+  local i=0
+  local parameter="${prefix}_${i}"
+
+  while [[ -n "${!parameter:-}" ]]; do
+    args+=("-D" "${!parameter}")
+    i=$((i+1))
+    parameter="${prefix}_${i}"
+  done
+}
+
+append_substitution_args
+
 if [[ -n "${BUILDKITE_PLUGIN_SUMMON_PROVIDER:-}" ]] ; then
   args+=("-p" "$BUILDKITE_PLUGIN_SUMMON_PROVIDER")
 fi
@@ -19,26 +33,39 @@ if [[ -n "${BUILDKITE_PLUGIN_SUMMON_ENVIRONMENT:-}" ]] ; then
   args+=("-e" "$BUILDKITE_PLUGIN_SUMMON_ENVIRONMENT")
 fi
 
-# print, and then run, the full summon invocation; briefly ignoring errors so
-# that we can capture its status
-summon_with_args="summon ${args[@]}"
-summon_cat_env="$summon_with_args cat @SUMMONENVFILE"
+if [[ -n "${BUILDKITE_PLUGIN_SUMMON_YAML:-}" ]] ; then
+  args+=("--yaml" "$BUILDKITE_PLUGIN_SUMMON_YAML")
+fi
+
+# prepare the full summon invocation, and print it for clarity (in a goofy way
+# intended to accurately represent what will be executed)
+summon_with_args=(summon "${args[@]}")
+summon_cat_env=("${summon_with_args[@]}" cat @SUMMONENVFILE)
+
+function summon() {
+  :
+}
+
+set -x
+"${summon_cat_env[@]}"
+set +x
+
+unset summon
+
+# finally run summon, briefly ignoring errors so that we can capture its status
 summon_status_path="$(mktemp -t summon-status.XXXXXX)"
 
-echo "source <($summon_cat_env)"
-
 set -a +e
-source <($summon_cat_env; echo $? > "$summon_status_path")
+source <("${summon_cat_env[@]}"; echo $? > "$summon_status_path")
 set +a -e
 
 summon_status=$(cat "$summon_status_path")
 
 rm "$summon_status_path"
 
-# if summon did fail, re-run it outside of process substitution so that
-# error output is visible (summon itself should never have side effects,
-# and this approach is a lot simpler than trying to capture summon output
-# only in the failure case)
+# if summon did fail, re-run it outside of process substitution so that error
+# output is visible (summon itself should never have side effects, and this
+# approach seems simpler than capturing summon output during substitution)
 if [ "$summon_status" -ne 0 ]; then
   $summon_with_args echo
   false
