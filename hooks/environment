@@ -19,13 +19,23 @@ if [[ -n "${BUILDKITE_PLUGIN_SUMMON_ENVIRONMENT:-}" ]] ; then
   args+=("-e" "$BUILDKITE_PLUGIN_SUMMON_ENVIRONMENT")
 fi
 
-args+=("cat" "@SUMMONENVFILE")
+# print, and then run, the full summon invocation; briefly ignoring errors so
+# that we can capture its status
+summon_with_args="summon ${args[@]}"
+summon_cat_env="$summon_with_args cat @SUMMONENVFILE"
+summon_status_path="$(mktemp -t summon-status.XXXXXX)"
 
-# print, and then run, the full summon invocation
-full_command="summon ${args[@]}"
+echo "$summon_cat_env"
 
-echo $full_command
+set -a +e
+source <($summon_cat_env; echo $? > "$summon_status_path")
+set +a -e
 
-set -a
-source <($full_command)
-set +a
+# if summon did fail, re-run it outside of process substitution so that
+# error output is visible (summon itself should never have side effects,
+# and this approach is a lot simpler than trying to capture summon output
+# only in the failure case)
+if [ "$(cat $summon_status_path)" -ne 0 ]; then
+  $summon_with_args echo
+  false
+fi

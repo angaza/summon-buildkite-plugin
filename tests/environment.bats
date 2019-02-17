@@ -52,3 +52,15 @@ teardown() {
   assert_success
   unstub summon
 }
+
+@test "re-runs with output if summon fails" {
+  stub summon \
+      "cat @SUMMONENVFILE : false" \
+      "echo : echo error message"
+
+  run "$HOOKS_PATH/environment"
+
+  assert_line --partial "error message"
+  assert_failure
+  unstub summon
+}
