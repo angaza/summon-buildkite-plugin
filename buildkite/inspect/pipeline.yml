@@ -3,3 +3,7 @@ steps:
     plugins:
       - docker-compose#v2.6.0:
           run: tests
+  - label: ":sparkles: Plugin Linter"
+    plugins:
+      - docker-compose#v2.6.0:
+          run: lint
