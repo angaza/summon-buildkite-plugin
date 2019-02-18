@@ -56,6 +56,7 @@ unset summon
 summon_status_path="$(mktemp -t summon-status.XXXXXX)"
 
 set -a +e
+# shellcheck source=/dev/null
 source <("${summon_cat_env[@]}"; echo $? > "$summon_status_path")
 set +a -e
 
@@ -67,6 +68,6 @@ rm "$summon_status_path"
 # output is visible (summon itself should never have side effects, and this
 # approach seems simpler than capturing summon output during substitution)
 if [ "$summon_status" -ne 0 ]; then
-  $summon_with_args echo
+  "${summon_cat_env[@]}" echo
   false
 fi
