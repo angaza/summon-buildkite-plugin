@@ -68,6 +68,6 @@ rm "$summon_status_path"
 # output is visible (summon itself should never have side effects, and this
 # approach seems simpler than capturing summon output during substitution)
 if [ "$summon_status" -ne 0 ]; then
-  "${summon_cat_env[@]}" echo
+  "${summon_with_args[@]}" echo
   false
 fi
