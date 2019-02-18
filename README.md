@@ -1,12 +1,13 @@
 # Summon Buildkite Plugin
 
 [`summon`](https://github.com/cyberark/summon) is a tool for fetching secrets
-from secure storage; this plugin makes it easy to use in Buildkite jobs.
+from secure storage; this plugin makes it easy to use in
+[Buildkite](https://buildkite.com/) jobs.
 
 Some reasons you might care:
 
-- If you are still hardcoding secrets in your Buildkite pipeline settings, that
-  is bad and you should stop. This plugin helps you stop.
+- Maybe you're still hardcoding secrets in your Buildkite pipeline settings? If
+  so, that is bad and you should stop. This plugin helps you stop.
 - You can immediately leverage any of the [existing `summon` secrets
   providers](https://github.com/cyberark/summon-aws-secrets), so you have
   flexibility in what secure storage you use.
