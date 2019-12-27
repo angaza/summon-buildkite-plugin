@@ -1,5 +1,5 @@
 name: Summon
-description: Read secrets into environment variables using Summon
+description: Load secrets using Summon from AWS S3, SSM Parameter Store, and elsewhere
 author: https://github.com/angaza
 requirements:
   - summon
