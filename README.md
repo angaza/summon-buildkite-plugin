@@ -9,7 +9,7 @@ Some reasons you might care:
 - Maybe you're still hardcoding secrets in your Buildkite pipeline settings? If
   so, that is bad and you should stop. This plugin helps you stop.
 - You can immediately leverage any of the [existing `summon` secrets
-  providers](https://github.com/cyberark/summon-aws-secrets), so you have
+  providers](https://cyberark.github.io/summon/#providers), so you have
   flexibility in what secure storage you use.
 - By installing different default providers on different machines, you can
   fetch secrets appropriately in different locations without changing
